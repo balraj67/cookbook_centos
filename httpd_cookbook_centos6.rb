@@ -19,7 +19,7 @@ execute "mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.bak" d
   only_if do
     File.exist?("/etc/httpd/conf.d/welcome.conf")
   end
-  notifies :restart "service[httpd]"
+  notifies :restart, "service[httpd]"
 end
 
 node['apache']['sites'].each do |site_name, site_data|
