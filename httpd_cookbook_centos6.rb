@@ -15,14 +15,14 @@ service "httpd" do
   action [ :enable, :start ]
 end
 
-execute "mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.bak" do
+execute "mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.disabled" do
   only_if do
     File.exist?("/etc/httpd/conf.d/welcome.conf")
   end
   notifies :restart, "service[httpd]"
 end
 
-node['apache']['sites'].each do |site_name, site_data|
+node["apache"]["sites"].each do |site_name, site_data|
   document_root = "/srv/apache/#{site_name}"
 
   template "/etc/httpd/conf.d/#{site_name}.conf" do
@@ -30,7 +30,7 @@ node['apache']['sites'].each do |site_name, site_data|
     mode "0644"
     variables(
       :document_root => document_root,
-      :port => site_data['port']
+      :port => site_data["port"]
     )
     notifies :restart, "service[httpd]"
   end
@@ -45,7 +45,7 @@ node['apache']['sites'].each do |site_name, site_data|
     mode "0644"
     variables(
       :site_name => site_name,
-      :port => site_data['port']
+      :port => site_data["port"]
     )
   end
 end
